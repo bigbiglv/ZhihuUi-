@@ -56,7 +56,6 @@ const injectPlaceholderSkeleton = () => {
 
   const bgColor = isDark ? '#15171e' : '#f6f8fa'
   const cardBg = isDark ? '#1c1f26' : '#ffffff'
-  const shimmerFrom = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'
   const shimmerTo = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)'
   const skeletonBg = isDark ? '#272c38' : '#e2e8f0'
   const headerBg = isDark ? 'rgba(28,31,38,0.85)' : 'rgba(255,255,255,0.85)'

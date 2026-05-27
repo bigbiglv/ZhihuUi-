@@ -74,6 +74,8 @@ export interface ChildComment {
   is_featured?: boolean
   hot?: boolean
   is_hot?: boolean
+  voting?: boolean
+  isDownvoted?: boolean
 }
 
 export interface RootComment {
@@ -102,4 +104,6 @@ export interface RootComment {
   childCommentsNextUrl?: string | null
   isChildLoadingMore?: boolean
   isChildEnd?: boolean
+  voting?: boolean
+  isDownvoted?: boolean
 }

@@ -57,10 +57,10 @@ async function handleUpvote() {
   // 乐观更新 UI
   isUpvoted.value = newStatus
   if (newStatus) {
-    upvoteCount.value++
+    if (upvoteCount.value !== undefined) upvoteCount.value++
     if (isDownvoted.value) isDownvoted.value = false
   } else {
-    upvoteCount.value--
+    if (upvoteCount.value !== undefined) upvoteCount.value--
   }
 
   try {
@@ -86,9 +86,9 @@ async function handleUpvote() {
     // 失败时回退
     isUpvoted.value = !newStatus
     if (newStatus) {
-      upvoteCount.value--
+      if (upvoteCount.value !== undefined) upvoteCount.value--
     } else {
-      upvoteCount.value++
+      if (upvoteCount.value !== undefined) upvoteCount.value++
     }
   }
 }
@@ -102,7 +102,7 @@ async function handleDownvote() {
   isDownvoted.value = newStatus
   if (newStatus && isUpvoted.value) {
     isUpvoted.value = false
-    upvoteCount.value--
+    if (upvoteCount.value !== undefined) upvoteCount.value--
   }
 
   try {

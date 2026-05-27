@@ -225,8 +225,8 @@ function formatCommentTime(timestamp: number) {
 
 // 格式化评论对象状态映射
 function mapCommentState(c: any) {
-  const isLiked = c.liked ?? c.voting ?? c.is_liked ?? c.is_voted ?? (c.reaction_type === 1) ?? false
-  const isDownvoted = c.isDownvoted ?? c.disliked ?? c.is_disliked ?? (c.reaction_type === 2) ?? false
+  const isLiked = c.liked ?? c.voting ?? c.is_liked ?? c.is_voted ?? (c.reaction_type === 1)
+  const isDownvoted = c.isDownvoted ?? c.disliked ?? c.is_disliked ?? (c.reaction_type === 2)
   return {
     ...c,
     voting: isLiked,

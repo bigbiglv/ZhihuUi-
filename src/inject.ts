@@ -29,7 +29,6 @@ function sanitizeUrl(url: string): string {
     try {
       const parsed = new URL(targetUrl, window.location.href)
       if (parsed.host !== window.location.host) {
-        const original = targetUrl
         parsed.host = window.location.host
         parsed.protocol = window.location.protocol
         targetUrl = parsed.toString()
@@ -45,7 +44,7 @@ function sanitizeUrl(url: string): string {
 /**
  * 辅助函数：统一净化 paging.next URL 并保存
  */
-function handleNextPageUrl(nextUrl: string | null | undefined, source: string) {
+function handleNextPageUrl(nextUrl: string | null | undefined) {
   if (!nextUrl) return
 
   const cleaned = sanitizeUrl(nextUrl)
@@ -66,7 +65,7 @@ function dispatchFeedData(data: any, source: string) {
   if (data && Array.isArray(data.data)) {
     // 提取并缓存下一页 URL
     if (data.paging && data.paging.next) {
-      handleNextPageUrl(data.paging.next, source)
+      handleNextPageUrl(data.paging.next)
     } else {
       console.warn(`[Inject ${source}] 响应中没有 paging.next 字段`)
     }
