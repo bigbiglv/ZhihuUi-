@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "知乎UI++",
+  "version": "1.0.1",
+  "description": "劫持知乎底层推荐数据并使用 Vue 3 重新渲染 UI",
+  "icons": {
+    "128": "icon-on.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["*://*.zhihu.com/*"],
+  "background": {
+    "service_worker": "src/background.ts"
+  },
+  "action": {
+    "default_popup": "",
+    "default_title": "知乎UI++ - 设置",
+    "default_icon": "icon-off.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.zhihu.com/*"],
+      "js": ["src/inject.ts"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://*.zhihu.com/*"],
+      "js": ["src/content.ts"],
+      "css": ["src/early-hide.css"],
+      "run_at": "document_start"
+    }
+  ]
+}

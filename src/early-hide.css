@@ -1,0 +1,27 @@
+/*
+ * 防闪烁样式 — 通过 manifest.json content_scripts.css 注入
+ * 在所有 JS 执行之前生效，立即隐藏知乎原站 #root 节点
+ *
+ * 由于 manifest.json 的 css 字段无法按 pathname 条件注入，
+ * 该样式会对所有 zhihu.com 页面生效。对于不需要重塑的页面，
+ * content.ts 会在脚本执行的最早时机同步移除此样式。
+ */
+#root {
+  opacity: 0.001 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 10px !important;
+  height: 10px !important;
+  min-height: 0 !important;
+  max-height: 10px !important;
+  z-index: -9999 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+}

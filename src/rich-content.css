@@ -1,0 +1,258 @@
+/* 深度穿透渲染知乎富文本内容的精美样式调节 */
+.zhihu-rich-content {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* 强力防御：限制富文本内所有子元素的最大宽度不超过容器，防穿透溢出 */
+.zhihu-rich-content * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 强制重置知乎原生可能带有的外层固定宽度（如 figure 或带有 width 样式的 div），自适应卡片 */
+.zhihu-rich-content figure,
+.zhihu-rich-content .image-package,
+.zhihu-rich-content .origin_image,
+.zhihu-rich-content .img-wrap {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 精准解决：如果长文中包含超宽表格（例如由多列素材小图拼成的表格），强制表格在卡片内横向滚动，决不溢出 */
+.zhihu-rich-content table {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+
+/* 精致美化：高颜值渐变 hr 标签，并在中间加入点缀图标 */
+.zhihu-rich-content hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 2.25rem 0;
+  opacity: 0.8;
+  position: relative;
+  overflow: visible;
+}
+
+.zhihu-rich-content hr::after {
+  content: "✦";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--card); /* 动态适配亮色/暗色卡片背景 */
+  padding: 0 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  opacity: 0.6;
+  transition: background-color 0.3s ease;
+}
+
+/* 代码块防穿透与横向滚动 */
+.zhihu-rich-content pre {
+  background-color: var(--rich-text-blockquote-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--rich-text);
+  overflow-x: auto;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  white-space: pre !important;
+  max-width: 100% !important;
+}
+
+/* 行内代码微美化 */
+.zhihu-rich-content code:not(pre code) {
+  background-color: var(--rich-text-blockquote-bg);
+  color: var(--primary);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85em;
+  border: 1px solid var(--border);
+  word-break: break-word;
+}
+
+/* 段落文字：加大底部边距与首行缩进 */
+.zhihu-rich-content p {
+  margin-top: 0;
+  margin-bottom: 0.5rem; /* 增加底部边距，让排版有呼吸感 */
+  line-height: 1.8; /* 优化行高，提升长文阅读体验 */
+  text-indent: 2em; /* 首行空两个字的宽度 */
+  text-align: justify; /* 两端对齐，使界面格外整齐 */
+}
+
+/* 强力防御：防止包含图片、iframe、视频、或者为空的段落受 text-indent 影响产生不对称偏移 */
+.zhihu-rich-content p:has(img),
+.zhihu-rich-content p:has(iframe),
+.zhihu-rich-content p:has(video),
+.zhihu-rich-content p:empty,
+.zhihu-rich-content p.has-image {
+  text-indent: 0;
+}
+
+/* 超链接美化 */
+.zhihu-rich-content a {
+  color: var(--rich-text-link);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.zhihu-rich-content a:hover {
+  color: var(--rich-text-link-hover);
+}
+
+/* 图片美化 */
+.zhihu-rich-content img {
+  border-radius: 0.75rem;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 1.5rem auto;
+  display: block;
+  box-shadow: var(--rich-text-img-shadow);
+  opacity: var(--rich-text-img-opacity);
+}
+
+/* 引用块美化 */
+.zhihu-rich-content blockquote {
+  border-left: 4px solid var(--rich-text-blockquote-border);
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  color: var(--rich-text-blockquote-text);
+  background-color: var(--rich-text-blockquote-bg);
+  border-radius: 0 0.75rem 0.75rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-shadow: inset 2px 0 8px rgba(0, 0, 0, 0.01);
+}
+
+/* 精美标题排版美化 */
+.zhihu-rich-content h1,
+.zhihu-rich-content h2,
+.zhihu-rich-content h3,
+.zhihu-rich-content h4 {
+  color: var(--rich-text-strong);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.zhihu-rich-content h1 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.zhihu-rich-content h2 {
+  font-size: 1.35rem;
+  position: relative;
+  padding-left: 0.75rem;
+}
+
+/* 精致左侧渐变修饰条 */
+.zhihu-rich-content h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--ring));
+  border-radius: 2px;
+}
+
+.zhihu-rich-content h3 {
+  font-size: 1.2rem;
+}
+
+.zhihu-rich-content h4 {
+  font-size: 1.05rem;
+}
+
+/* 精美列表排版 */
+.zhihu-rich-content ul,
+.zhihu-rich-content ol {
+  margin: 1rem 0 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.zhihu-rich-content ul {
+  list-style-type: disc;
+}
+
+.zhihu-rich-content ol {
+  list-style-type: decimal;
+}
+
+.zhihu-rich-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+  color: var(--rich-text);
+}
+
+.zhihu-rich-content b,
+.zhihu-rich-content strong {
+  font-weight: 800;
+  color: var(--rich-text-strong);
+}
+
+/* 视频嵌入播放容器响应式微动效 */
+.zhihu-rich-content .custom-video-wrapper {
+  margin: 1.5rem auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: #000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.zhihu-rich-content .custom-video-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 网页链接行内徽章精致样式 */
+.zhihu-rich-content a.inline-link-badge {
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: 1px solid var(--border);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+}
+
+.zhihu-rich-content a.inline-link-badge:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+/* 长文图片放大手势与悬浮微动效（和评论区样式共享） */
+.zhihu-rich-content img.comment-preview-thumb {
+  cursor: zoom-in;
+  transition: all 0.25s ease;
+}
+
+.zhihu-rich-content img.comment-preview-thumb:hover {
+  opacity: 0.95;
+  transform: scale(1.005);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}

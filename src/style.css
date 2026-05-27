@@ -1,0 +1,310 @@
+@import "tailwindcss";
+@import "./rich-content.css";
+@source "./src";
+@source "./**/*.vue";
+@source "./**/*.ts";
+
+/* ==========================================================================
+   主题设计系统 - 基于 CSS Variables（参考 shadcn/ui 方案）
+   
+   核心理念：
+   1. 在 :host（Shadow DOM 宿主）上注册全局语义化 CSS 变量
+   2. 在 .dark 选择器下重写变量实现暗色模式
+   3. 通过 Tailwind @theme 指令将变量映射为工具类
+   4. 所有组件仅使用语义化类名，无需写 dark: 前缀
+   ========================================================================== */
+
+/* ---------- Light Mode（默认主题） ---------- */
+:host {
+  display: block;
+  font-family: Inter, Roboto, Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  min-height: 100vh;
+  position: relative;
+  z-index: 999999;
+
+  /* 全局基础色 */
+  --background: #f6f8fa;
+  --foreground: #1e293b;
+
+  /* 卡片色 */
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+
+  /* 弹窗色 */
+  --popover: #ffffff;
+  --popover-foreground: #334155;
+
+  /* 主色调（蓝色系） */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-hover: #1d4ed8;
+
+  /* 柔和色（低对比度背景） */
+  --muted: #e2e8f0;
+  --muted-foreground: #64748b;
+
+  /* 强调色 */
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+
+  /* 边框 & 分割线 */
+  --border: rgba(226, 232, 240, 0.8);
+  --border-subtle: rgba(226, 232, 240, 0.5);
+
+  /* 输入框 */
+  --input: #f1f5f9;
+  --input-border: #e2e8f0;
+  --input-focus-border: #3b82f6;
+
+  /* 环形聚焦 */
+  --ring: #3b82f6;
+
+  /* 标签/徽章 */
+  --badge: rgba(219, 234, 254, 0.8);
+  --badge-foreground: #2563eb;
+
+  /* 骨架屏 */
+  --skeleton: #e2e8f0;
+
+  /* 次级文字 */
+  --secondary-foreground: #475569;
+
+  /* 时间戳/占位符文字 */
+  --placeholder: #94a3b8;
+
+  /* 评论区背景 */
+  --comment-bg: rgba(248, 250, 252, 0.5);
+  --comment-child-bg: rgba(241, 245, 249, 0.4);
+
+  /* 操作菜单分割线 */
+  --menu-separator: #f1f5f9;
+
+  /* 渐变遮罩起始色（与卡片色一致） */
+  --gradient-mask-from: #ffffff;
+
+  /* 悬浮收起按钮 */
+  --collapse-btn-bg: rgba(255, 255, 255, 0.95);
+  --collapse-btn-border: rgba(226, 232, 240, 0.8);
+  --collapse-btn-hover-border: rgba(191, 219, 254, 1);
+  --collapse-btn-hover-bg: rgba(239, 246, 255, 0.5);
+
+  /* 状态色 */
+  --upvoted: #2563eb;
+  --upvoted-bg: rgba(239, 246, 255, 0.5);
+  --downvoted: #dc2626;
+  --downvoted-bg: rgba(254, 242, 242, 0.5);
+  --favorited: #ca8a04;
+  --favorited-bg: rgba(254, 252, 232, 0.3);
+  --danger: #e11d48;
+  --danger-bg: rgba(255, 241, 242, 0.5);
+
+  /* 富文本 */
+  --rich-text: #334155;
+  --rich-text-strong: #0f172a;
+  --rich-text-blockquote-bg: #f8fafc;
+  --rich-text-blockquote-border: #3b82f6;
+  --rich-text-blockquote-text: #64748b;
+  --rich-text-link: #2563eb;
+  --rich-text-link-hover: #1d4ed8;
+  --rich-text-img-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --rich-text-img-opacity: 1;
+
+  /* 修复 Tailwind CSS v4 渐变（gradient）在 Shadow DOM 内部由于 @property 继承失效导致 background-image 解析为 none 的问题 */
+  --tw-gradient-position: to right;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-gradient-via-stops: var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+
+  /* 应用主题 */
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------- Dark Mode（暗色主题）---------- */
+:host(.dark) {
+  --background: #15171e; /* 极具质感的深黑灰蓝，护眼且有深邃感 */
+  --foreground: #cbd5e1; /* 舒适的灰白，避免刺眼的纯白 */
+
+  /* 声明浏览器暗色模式，使原生元素（如滚动条轨道）渲染为暗色 */
+  color-scheme: dark;
+
+  --card: #1c1f26; /* 稍微亮一点的卡片背景，层次清晰 */
+  --card-foreground: #e2e8f0;
+
+  --popover: #222630;
+  --popover-foreground: #e2e8f0;
+
+  --primary: #60a5fa;
+  --primary-foreground: #0f172a;
+  --primary-hover: #93bbfd;
+
+  --muted: #272c38;
+  --muted-foreground: #8a99ad; /* 降低副文本的亮度，减少视觉疲劳 */
+
+  --accent: #272c38;
+  --accent-foreground: #f1f5f9;
+
+  --border: rgba(148, 163, 184, 0.12); /* 极细柔和边框 */
+  --border-subtle: rgba(148, 163, 184, 0.06);
+
+  --input: #252936;
+  --input-border: rgba(148, 163, 184, 0.25);
+  --input-focus-border: #60a5fa;
+
+  --ring: #60a5fa;
+
+  --badge: rgba(96, 165, 250, 0.15);
+  --badge-foreground: #60a5fa;
+
+  --skeleton: #272c38;
+
+  --secondary-foreground: #cbd5e1;
+
+  --placeholder: #94a3b8;
+
+  --comment-bg: rgba(30, 38, 53, 0.25);
+  --comment-child-bg: rgba(30, 38, 53, 0.35);
+
+  --menu-separator: rgba(148, 163, 184, 0.1);
+
+  --gradient-mask-from: #1c1f26;
+
+  --collapse-btn-bg: rgba(28, 31, 38, 0.95);
+  --collapse-btn-border: rgba(148, 163, 184, 0.15);
+  --collapse-btn-hover-border: rgba(96, 165, 250, 0.4);
+  --collapse-btn-hover-bg: rgba(96, 165, 250, 0.08);
+
+  --upvoted: #60a5fa;
+  --upvoted-bg: rgba(96, 165, 250, 0.1);
+  --downvoted: #f87171;
+  --downvoted-bg: rgba(248, 113, 113, 0.1);
+  --favorited: #facc15;
+  --favorited-bg: rgba(250, 204, 21, 0.08);
+  --danger: #fb7185;
+  --danger-bg: rgba(251, 113, 133, 0.1);
+
+  --rich-text: #cbd5e1; /* 护眼灰白，拒绝刺眼 */
+  --rich-text-strong: #f1f5f9;
+  --rich-text-blockquote-bg: rgba(30, 38, 53, 0.3);
+  --rich-text-blockquote-border: #60a5fa;
+  --rich-text-blockquote-text: #94a3b8;
+  --rich-text-link: #60a5fa;
+  --rich-text-link-hover: #93bbfd;
+  --rich-text-img-shadow: none;
+  --rich-text-img-opacity: 0.85;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ==========================================================================
+   极简精致的自定义全局滚动条样式（完美解决浏览器默认白色粗糙滚动条问题）
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 9999px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+:host(.dark) ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+:host(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 确保 Shadow DOM 内部所有的子元素及伪元素都能正确计算渐变变量值，支持延迟绑定 */
+:host *, :host ::before, :host ::after {
+  --tw-gradient-position: to right;
+  /* 移除这里的 --tw-gradient-from/to/via 定义，避免由于权重相同覆盖工具类（如 .from-blue-600）的自定义颜色值。 */
+  /* 如果子元素没有应用工具类，它会自动从父级（即宿主 :host）上继承兜底的透明值 #0000 */
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-gradient-via-stops: var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 @theme 指令 - 将 CSS 变量映射为语义化颜色工具类
+   使得在模板中可以直接使用如 bg-background、text-foreground 等类名
+   ========================================================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+
+  --color-input: var(--input);
+  --color-input-border: var(--input-border);
+  --color-input-focus-border: var(--input-focus-border);
+
+  --color-ring: var(--ring);
+
+  --color-badge: var(--badge);
+  --color-badge-foreground: var(--badge-foreground);
+
+  --color-skeleton: var(--skeleton);
+
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-placeholder: var(--placeholder);
+
+  --color-comment-bg: var(--comment-bg);
+  --color-comment-child-bg: var(--comment-child-bg);
+
+  --color-menu-separator: var(--menu-separator);
+
+  --color-gradient-mask-from: var(--gradient-mask-from);
+
+  --color-collapse-btn-bg: var(--collapse-btn-bg);
+  --color-collapse-btn-border: var(--collapse-btn-border);
+
+  --color-upvoted: var(--upvoted);
+  --color-upvoted-bg: var(--upvoted-bg);
+  --color-downvoted: var(--downvoted);
+  --color-downvoted-bg: var(--downvoted-bg);
+  --color-favorited: var(--favorited);
+  --color-favorited-bg: var(--favorited-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+
+  --color-rich-text: var(--rich-text);
+  --color-rich-text-strong: var(--rich-text-strong);
+}
