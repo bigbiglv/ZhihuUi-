@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { proxyFetch } from '@/utils/proxyFetch.ts'
+import { replaceZhihuEmojis } from '@/utils/emoji.ts'
 import { ZHIHU_API, ZHIHU_STATIC, ZHIHU_WEB_URL } from '@/config/api.ts'
 import ImagePreview from '@/components/ImagePreview/index.vue'
 import { Heart, ThumbsUp, ThumbsDown, ChevronDown, Loader2, Pin, Flame } from 'lucide-vue-next'
@@ -12,6 +13,7 @@ const previewImageSrc = ref('')
 // 转换并重构评论的富文本 HTML，实现小图预览和 @提及新标签页跳转
 function formatCommentHtml(content: string) {
   if (!content) return ''
+  content = replaceZhihuEmojis(content)
   try {
     const parser = new DOMParser()
     const doc = parser.parseFromString(content, 'text/html')
@@ -47,11 +49,14 @@ function formatCommentHtml(content: string) {
       }
     })
 
-    // 查找并处理直接使用 img 标签的图片
+    // 遍历评论中所有的 img 标签（包含普通插图和表情包图片）
     const imgs = doc.querySelectorAll('img')
     imgs.forEach((img) => {
-      // 防止重复处理
+      // 1. 如果已经被处理过（带有大图预览类名），则跳过
       if (img.classList.contains('comment-preview-thumb') && !img.src.startsWith('data:image')) return
+      
+      // 2. 如果当前图片是表情包（由 emoji.ts 映射生成或带有原生标志），则跳过，不追加边框和大图预览样式
+      if (img.classList.contains('emotion') || img.getAttribute('height') === '1.4rem') return
 
       const realSrc = img.getAttribute('data-actualsrc') || img.getAttribute('data-original') || img.getAttribute('src')
 

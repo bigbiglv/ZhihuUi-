@@ -20,6 +20,7 @@ import {
   siCsdn,
   siXiaohongshu,
 } from 'simple-icons'
+import { replaceZhihuEmojis } from '@/utils/emoji.ts'
 
 interface Props {
   questionInfo: any
@@ -64,16 +65,21 @@ const getBadgeContent = (domain: string) => {
 // 格式化富文本详情
 const formatRichContentHtml = (content: string) => {
   if (!content) return ''
+  content = replaceZhihuEmojis(content)
   try {
     const parser = new DOMParser()
     const doc = parser.parseFromString(content, 'text/html')
 
     // 优化图片预览
+    // 遍历问题描述中所有的 img 标签（包含普通插图和表情包图片）
     const images = doc.querySelectorAll('img')
     images.forEach((img) => {
+      // 检查当前图片是否为表情包（由 emoji.ts 映射生成或带有原生标志）
       const isEmotion =
         img.classList.contains('emotion') ||
         img.getAttribute('height') === '1.4rem'
+      
+      // 如果不是表情包，则是普通插图，需要追加放大手势和大图预览类名
       if (!isEmotion) {
         img.classList.add('comment-preview-thumb', 'cursor-zoom-in')
         if (!img.hasAttribute('data-original')) {
