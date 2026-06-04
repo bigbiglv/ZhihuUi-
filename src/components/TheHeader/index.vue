@@ -146,6 +146,7 @@ function handleSearch() {
     } else {
       window.open(ZHIHU_WEB_URL.search(query), '_blank')
     }
+    searchQuery.value = ''
   }
 }
 

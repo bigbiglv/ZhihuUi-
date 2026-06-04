@@ -595,12 +595,6 @@ onMounted(() => {
                   </div>
                 </template>
               </div>
-              <span class="text-xs text-placeholder flex-shrink-0 ml-2">
-                {{ formatCommentTime(comment.created_time) }}
-                <template v-if="comment.address_text || (Array.isArray(comment.comment_tag) && comment.comment_tag.find((t: any) => t.type === 'ip_info'))">
-                  · {{ comment.address_text || (comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? comment.comment_tag.find((t: any) => t.type === 'ip_info')?.text : comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
-                </template>
-              </span>
             </div>
 
             <!-- 评论 HTML 富文本渲染 -->
@@ -636,25 +630,33 @@ onMounted(() => {
                   </button>
                 </div>
 
-                <!-- 展开子回复按钮 (二级评论) -->
-                <button
-                  v-if="comment.child_comment_count > 0"
-                  @click="toggleChildComments(comment)"
-                  class="flex items-center space-x-1 text-primary hover:text-primary-hover font-semibold cursor-pointer select-none transition text-xs"
-                >
-                  <ChevronDown
-                    :class="{ 'rotate-180': comment.isChildExpanded }"
-                    class="h-3.5 w-3.5 transform transition-transform duration-300"
-                  />
-                  <span>
-                    {{
-                      comment.isChildExpanded
-                        ? '收起回复'
-                        : `展开 ${comment.child_comment_count} 条回复`
-                    }}
-                  </span>
-                </button>
+                <!-- 时间和 IP -->
+                <span class="text-xs text-placeholder flex-shrink-0 select-none">
+                  {{ formatCommentTime(comment.created_time) }}
+                  <template v-if="comment.address_text || (Array.isArray(comment.comment_tag) && comment.comment_tag.find((t: any) => t.type === 'ip_info'))">
+                    · {{ comment.address_text || (comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? comment.comment_tag.find((t: any) => t.type === 'ip_info')?.text : comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
+                  </template>
+                </span>
               </div>
+
+              <!-- 右侧：展开子回复按钮 (二级评论) -->
+              <button
+                v-if="comment.child_comment_count > 0"
+                @click="toggleChildComments(comment)"
+                class="flex items-center space-x-1 text-primary hover:text-primary-hover font-semibold cursor-pointer select-none transition text-xs ml-auto"
+              >
+                <ChevronDown
+                  :class="{ 'rotate-180': comment.isChildExpanded }"
+                  class="h-3.5 w-3.5 transform transition-transform duration-300"
+                />
+                <span>
+                  {{
+                    comment.isChildExpanded
+                      ? '收起回复'
+                      : `展开 ${comment.child_comment_count} 条回复`
+                  }}
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -767,14 +769,6 @@ onMounted(() => {
                       </div>
                     </template>
                   </div>
-                  <span
-                    class="text-[11px] text-placeholder flex-shrink-0 ml-2 mt-0.5"
-                  >
-                    {{ formatCommentTime(child.created_time) }}
-                    <template v-if="child.address_text || (Array.isArray(child.comment_tag) && child.comment_tag.find((t: any) => t.type === 'ip_info'))">
-                      · {{ child.address_text || (child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? child.comment_tag.find((t: any) => t.type === 'ip_info')?.text : child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
-                    </template>
-                  </span>
                 </div>
 
                 <!-- 二级评论富文本 -->
@@ -813,6 +807,14 @@ onMounted(() => {
                         :class="{ 'fill-current': child.isDownvoted }"
                       />
                     </button>
+
+                    <!-- 时间和 IP -->
+                    <span class="text-[10px] text-placeholder select-none">
+                      {{ formatCommentTime(child.created_time) }}
+                      <template v-if="child.address_text || (Array.isArray(child.comment_tag) && child.comment_tag.find((t: any) => t.type === 'ip_info'))">
+                        · {{ child.address_text || (child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? child.comment_tag.find((t: any) => t.type === 'ip_info')?.text : child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
+                      </template>
+                    </span>
                   </div>
                 </div>
               </div>

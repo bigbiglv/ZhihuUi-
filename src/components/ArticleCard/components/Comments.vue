@@ -520,12 +520,6 @@ onMounted(() => {
                   </div>
                 </template>
               </div>
-              <span class="text-xs text-placeholder flex-shrink-0 ml-2">
-                {{ formatCommentTime(comment.created_time) }}
-                <template v-if="comment.address_text || (Array.isArray(comment.comment_tag) && comment.comment_tag.find((t: any) => t.type === 'ip_info'))">
-                  · {{ comment.address_text || (comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? comment.comment_tag.find((t: any) => t.type === 'ip_info')?.text : comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
-                </template>
-              </span>
             </div>
 
             <!-- 评论 HTML 富文本渲染 -->
@@ -536,20 +530,30 @@ onMounted(() => {
             ></div>
 
             <div
-              class="mt-2.5 flex items-center space-x-4 select-none text-placeholder text-xs"
+              class="mt-2.5 flex items-center justify-between select-none text-placeholder text-xs"
             >
-              <div
-                class="flex items-center space-x-1 hover:text-red-500 transition cursor-pointer"
-              >
-                <ThumbsUp class="h-4 w-4" />
-                <span>{{ comment.vote_count ?? comment.like_count ?? 0 }}</span>
+              <div class="flex items-center space-x-4 text-muted-foreground">
+                <div
+                  class="flex items-center space-x-1 hover:text-red-500 transition cursor-pointer"
+                >
+                  <ThumbsUp class="h-4 w-4" />
+                  <span>{{ comment.vote_count ?? comment.like_count ?? 0 }}</span>
+                </div>
+
+                <!-- 时间和 IP -->
+                <span class="text-xs text-placeholder flex-shrink-0 select-none">
+                  {{ formatCommentTime(comment.created_time) }}
+                  <template v-if="comment.address_text || (Array.isArray(comment.comment_tag) && comment.comment_tag.find((t: any) => t.type === 'ip_info'))">
+                    · {{ comment.address_text || (comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? comment.comment_tag.find((t: any) => t.type === 'ip_info')?.text : comment.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
+                  </template>
+                </span>
               </div>
 
               <!-- 展开子回复按钮 (二级评论) -->
               <button
                 v-if="comment.child_comment_count > 0"
                 @click="toggleChildComments(comment)"
-                class="flex items-center space-x-1 text-primary hover:text-primary-hover font-semibold cursor-pointer select-none transition text-xs"
+                class="flex items-center space-x-1 text-primary hover:text-primary-hover font-semibold cursor-pointer select-none transition text-xs ml-auto"
               >
                 <ChevronDown
                   :class="{ 'rotate-180': comment.isChildExpanded }"
@@ -675,14 +679,6 @@ onMounted(() => {
                       </div>
                     </template>
                   </div>
-                  <span
-                    class="text-[11px] text-placeholder flex-shrink-0 ml-2 mt-0.5"
-                  >
-                    {{ formatCommentTime(child.created_time) }}
-                    <template v-if="child.address_text || (Array.isArray(child.comment_tag) && child.comment_tag.find((t: any) => t.type === 'ip_info'))">
-                      · {{ child.address_text || (child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? child.comment_tag.find((t: any) => t.type === 'ip_info')?.text : child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
-                    </template>
-                  </span>
                 </div>
 
                 <!-- 二级评论富文本 -->
@@ -694,12 +690,25 @@ onMounted(() => {
 
                 <!-- 二级评论底部点赞 -->
                 <div
-                  class="mt-1.5 flex items-center space-x-1 select-none text-placeholder text-[10px]"
+                  class="mt-1.5 flex items-center justify-between select-none text-placeholder text-[10px]"
                 >
-                  <ThumbsUp
-                    class="h-3.5 w-3.5 hover:text-red-500 transition cursor-pointer"
-                  />
-                  <span class="font-medium">{{ child.vote_count ?? child.like_count ?? 0 }}</span>
+                  <div class="flex items-center space-x-3 text-muted-foreground">
+                    <!-- 赞 -->
+                    <div
+                      class="flex items-center space-x-1 hover:text-red-500 transition cursor-pointer"
+                    >
+                      <ThumbsUp class="h-3.5 w-3.5" />
+                      <span class="font-medium">{{ child.vote_count ?? child.like_count ?? 0 }}</span>
+                    </div>
+
+                    <!-- 时间和 IP -->
+                    <span class="text-[10px] text-placeholder select-none">
+                      {{ formatCommentTime(child.created_time) }}
+                      <template v-if="child.address_text || (Array.isArray(child.comment_tag) && child.comment_tag.find((t: any) => t.type === 'ip_info'))">
+                        · {{ child.address_text || (child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text?.includes('IP') ? child.comment_tag.find((t: any) => t.type === 'ip_info')?.text : child.comment_tag?.find((t: any) => t.type === 'ip_info')?.text) }}
+                      </template>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
