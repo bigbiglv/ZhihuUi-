@@ -1,6 +1,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { isYanxuanContent } from '@/utils/yanxuan'
 import { useBlocklist } from '@/composables/useBlocklist'
+import { getSeenIds, hasSeen } from '@/utils/seenTracker'
 
 const MESSAGE_TYPE = 'ZHIHU_FEED_INTERCEPTED'
 
@@ -44,7 +45,7 @@ export function useFeed() {
   /**
    * 核心数据处理：从 postMessage 中解析推荐流数据并追加到列表
    */
-  const handleMessage = (event: MessageEvent) => {
+  const handleMessage = async (event: MessageEvent) => {
     if (!event.data || event.data.type !== MESSAGE_TYPE) return
 
     const responsePayload = event.data.data
@@ -53,18 +54,21 @@ export function useFeed() {
       return
     }
 
+    // 确保 seenTracker 已经初始化加载完成
+    await getSeenIds()
+
     // 过滤出有效的内容卡片
     const items = responsePayload.data.filter(
       (item: any) => item && item.target,
     )
 
     if (items.length > 0) {
-      // 去重合并
+      // 去重与已浏览内容过滤合并
       const existingIds = new Set(rawRecommendList.value.map((i) => i.id))
       const newItems = items.filter((item: any) => {
         const safeId = item.id || `${item.target.type}-${item.target.id}`
         item.id = safeId
-        return !existingIds.has(safeId)
+        return !existingIds.has(safeId) && !hasSeen(safeId)
       })
 
       if (newItems.length > 0) {
@@ -99,7 +103,8 @@ export function useFeed() {
     }, 5000)
   }
 
-  onMounted(() => {
+  onMounted(async () => {
+    await getSeenIds()
     loadSettings()
     chrome.storage.onChanged.addListener(handleStorageChange)
     window.addEventListener('message', handleMessage)

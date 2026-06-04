@@ -46,7 +46,27 @@ const thanksCount = ref(targetInfo.thanksCount)
 
 // 切换评论面板展开/收起
 function handleToggleComments() {
-  emit('update:isCommentsExpanded', !props.isCommentsExpanded)
+  const newStatus = !props.isCommentsExpanded
+  emit('update:isCommentsExpanded', newStatus)
+
+  // 如果是展开评论操作，表明产生阅读兴趣，异步上报已读历史
+  if (newStatus && props.data && props.data.id) {
+    console.log('[Read History] 展开评论，正在上报已读历史:', props.data.id)
+    proxyFetch(ZHIHU_API.action.readHistory, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        content_token: String(props.data.id),
+        content_type: props.data.type || 'answer',
+      },
+    }).then(() => {
+      console.log('[Read History] 展开评论成功上报已读历史:', props.data.id)
+    }).catch((err) => {
+      console.error('[Read History] 展开评论上报已读历史失败:', err)
+    })
+  }
 }
 
 // 赞同/取消赞同

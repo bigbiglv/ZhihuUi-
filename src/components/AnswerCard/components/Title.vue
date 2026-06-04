@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ZHIHU_WEB_URL } from '@/config/api.ts'
+import { ZHIHU_WEB_URL, ZHIHU_API } from '@/config/api.ts'
+import { proxyFetch } from '@/utils/proxyFetch.ts'
 
 import type { StandardCardData } from '@/utils/mapCardData.ts'
 
@@ -22,6 +23,25 @@ const titleText = computed(() => {
 // 跳转到问题/文章详情页
 function goToDetail() {
   const d = props.data
+
+  // 异步上报已读历史，不进行 await 避免导致浏览器拦截 window.open 新窗格
+  if (d.id) {
+    console.log('[Read History] 点击回答标题跳转，正在上报已读历史:', d.id)
+    proxyFetch(ZHIHU_API.action.readHistory, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        content_token: String(d.id),
+        content_type: d.type || 'answer',
+      },
+    }).then(() => {
+      console.log('[Read History] 成功上报已读历史:', d.id)
+    }).catch((err) => {
+      console.error('[Read History] 上报已读历史失败:', err)
+    })
+  }
 
   if (d.question?.id && d.type === 'answer') {
     window.open(ZHIHU_WEB_URL.question(d.question.id), '_blank')

@@ -5,6 +5,49 @@ import AnswerCard from '@/components/AnswerCard/index.vue'
 import { useFeed } from '@/composables/useFeed'
 import { Loader2 } from 'lucide-vue-next'
 import { mapToStandardCardData } from '@/utils/mapCardData'
+import { addSeenId } from '@/utils/seenTracker'
+
+// 曝光监听自定义指令：在视口停留满 1 秒且可见度达到 50% 即视为已读曝光
+const vSeen = {
+  mounted(el: HTMLElement, binding: any) {
+    const id = binding.value
+    if (!id) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // 进入视口：启动 1000ms 定时器
+            const timer = setTimeout(() => {
+              addSeenId(id)
+            }, 1000)
+            ;(el as any)._seenTimer = timer
+          } else {
+            // 移出视口：清除定时器，以防滑动过快误判
+            if ((el as any)._seenTimer) {
+              clearTimeout((el as any)._seenTimer)
+              ;(el as any)._seenTimer = null
+            }
+          }
+        })
+      },
+      {
+        threshold: 0.5, // 50% 以上面积可见
+      }
+    )
+
+    observer.observe(el)
+    ;(el as any)._seenObserver = observer
+  },
+  unmounted(el: HTMLElement) {
+    if ((el as any)._seenObserver) {
+      (el as any)._seenObserver.disconnect()
+    }
+    if ((el as any)._seenTimer) {
+      clearTimeout((el as any)._seenTimer)
+    }
+  },
+}
 
 // 引入高度内聚的 Feed 业务模型
 const { recommendList, isLoading, loadMore } = useFeed()
@@ -120,12 +163,15 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- 推荐文章/回答卡片容器 (已拆分为 ArticleCard 和 AnswerCard 组件) -->
         <div v-else class="space-y-6">
-          <template v-for="item in recommendList" :key="item.id">
+          <div
+            v-for="item in recommendList"
+            :key="item.id"
+            v-seen="item.id"
+          >
             <AnswerCard v-if="item.target.type === 'answer'" :data="mapToStandardCardData(item)" />
             <ArticleCard v-else-if="item.target.type === 'article'" :data="mapToStandardCardData(item)" />
-          </template>
+          </div>
 
           <!-- 加载状态指示器 -->
           <div v-if="isLoading" class="flex justify-center py-6">
