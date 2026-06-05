@@ -25,26 +25,39 @@ const removeCrxjsMainWorldWarning = () => {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    vue(),
-    crx({ manifest }),
-    removeCrxjsMainWorldWarning(),
-  ],
-  server: {
-    port: 5173,
-    strictPort: true,
-    hmr: {
+export default defineConfig(({ mode }) => {
+  const isDev = mode === 'development'
+
+  const manifestConfig = {
+    ...manifest,
+    name: isDev ? `${manifest.name} - dev` : manifest.name,
+    action: {
+      ...manifest.action,
+      default_title: isDev ? `${manifest.action.default_title} - dev` : manifest.action.default_title
+    }
+  }
+
+  return {
+    plugins: [
+      tailwindcss(),
+      vue(),
+      crx({ manifest: manifestConfig }),
+      removeCrxjsMainWorldWarning(),
+    ],
+    server: {
       port: 5173,
+      strictPort: true,
+      hmr: {
+        port: 5173,
+      },
+      cors: {
+        origin: [/chrome-extension:\/\//],
+      },
     },
-    cors: {
-      origin: [/chrome-extension:\/\//],
+    resolve: {
+      alias: {
+        '@': new URL('./src', import.meta.url).pathname,
+      },
     },
-  },
-  resolve: {
-    alias: {
-      '@': new URL('./src', import.meta.url).pathname,
-    },
-  },
+  }
 })
