@@ -66,7 +66,7 @@ export function useFeed() {
       // 去重与已浏览内容过滤合并
       const existingIds = new Set(rawRecommendList.value.map((i) => i.id))
       const newItems = items.filter((item: any) => {
-        const safeId = item.id || `${item.target.type}-${item.target.id}`
+        const safeId = `${item.target.type}-${item.target.id}`
         item.id = safeId
         return !existingIds.has(safeId) && !hasSeen(safeId)
       })

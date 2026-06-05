@@ -21,7 +21,7 @@ if (!earlyMatchResult.reshape) {
           rules.length > 0 &&
           rules[0] instanceof CSSStyleRule &&
           rules[0].selectorText === '#root' &&
-          rules[0].style.getPropertyValue('clip') === 'rect(0, 0, 0, 0)'
+          rules[0].style.getPropertyValue('opacity') === '0.001'
         ) {
           sheet.disabled = true
           break
@@ -184,7 +184,7 @@ const disableEarlyHideCSSGlobal = () => {
         rules.length > 0 &&
         rules[0] instanceof CSSStyleRule &&
         rules[0].selectorText === '#root' &&
-        rules[0].style.getPropertyValue('clip') === 'rect(0, 0, 0, 0)'
+        rules[0].style.getPropertyValue('opacity') === '0.001'
       ) {
         sheet.disabled = true
         break

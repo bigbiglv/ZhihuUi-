@@ -15,6 +15,7 @@ import {
 } from 'lucide-vue-next'
 
 import type { StandardCardData } from '@/utils/mapCardData.ts'
+import { addSeenId } from '@/utils/seenTracker.ts'
 
 interface Props {
   data: StandardCardData
@@ -51,6 +52,7 @@ function handleToggleComments() {
 
   // 如果是展开评论操作，表明产生阅读兴趣，异步上报已读历史
   if (newStatus && props.data && props.data.id) {
+    addSeenId(`${props.data.type || 'answer'}-${props.data.id}`)
     console.log('[Read History] 展开评论，正在上报已读历史:', props.data.id)
     proxyFetch(ZHIHU_API.action.readHistory, {
       method: 'POST',

@@ -4,6 +4,7 @@ import { ZHIHU_WEB_URL, ZHIHU_API } from '@/config/api.ts'
 import { proxyFetch } from '@/utils/proxyFetch.ts'
 
 import type { StandardCardData } from '@/utils/mapCardData.ts'
+import { addSeenId } from '@/utils/seenTracker.ts'
 
 interface Props {
   data: StandardCardData
@@ -26,6 +27,7 @@ function goToDetail() {
 
   // 异步上报已读历史，不进行 await 避免导致浏览器拦截 window.open 新窗格
   if (d.id) {
+    addSeenId(`${d.type || 'answer'}-${d.id}`)
     console.log('[Read History] 点击回答标题跳转，正在上报已读历史:', d.id)
     proxyFetch(ZHIHU_API.action.readHistory, {
       method: 'POST',

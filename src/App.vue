@@ -82,7 +82,7 @@ const disableEarlyHideCSS = () => {
         rules.length > 0 &&
         rules[0] instanceof CSSStyleRule &&
         rules[0].selectorText === '#root' &&
-        rules[0].style.getPropertyValue('clip') === 'rect(0, 0, 0, 0)'
+        rules[0].style.getPropertyValue('opacity') === '0.001'
       ) {
         sheet.disabled = true
         break
@@ -116,13 +116,8 @@ const updateReshapeDOMState = () => {
           position: absolute !important;
           top: 0 !important;
           left: 0 !important;
-          width: 10px !important;
-          height: 10px !important;
-          min-height: 0 !important;
-          max-height: 10px !important;
+          width: 100% !important;
           z-index: -9999 !important;
-          overflow: hidden !important;
-          clip: rect(0, 0, 0, 0) !important;
         }
         body {
           margin: 0 !important;
