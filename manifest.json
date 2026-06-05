@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "知乎UI++",
+  "name": "知乎- Zhihu-",
   "version": "1.0.1",
   "description": "劫持知乎底层推荐数据并使用 Vue 3 重新渲染 UI",
   "icons": {
@@ -13,7 +13,7 @@
   },
   "action": {
     "default_popup": "src/popup/index.html",
-    "default_title": "知乎UI++ - 设置",
+    "default_title": "知乎- Zhihu- - 设置",
     "default_icon": "icon-off.png"
   },
   "content_scripts": [
